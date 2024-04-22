@@ -46,6 +46,12 @@ public final class CardMemberController {
         cardMember.getBirthday().setText(birthDate);
         cardMember.getIdentity().setText(identity);
         cardMember.getRoomName().setText(roomName);
+        if(expirateDate.contains("expiré")){
+            cardMember.getExpirateDate().setForeground(Color.red);
+        }
+        else{
+            cardMember.getExpirateDate().setForeground(Color.decode("#337E00"));
+        }
         cardMember.getExpirateDate().setText(expirateDate);
         this.parent=parent;
         cardMember.getQrCode().setIcon(new ImageIcon(imageBuffered));

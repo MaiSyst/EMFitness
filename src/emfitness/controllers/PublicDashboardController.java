@@ -14,7 +14,6 @@ import com.maisyst.fetch.exceptions.MaiException;
 import com.maisyst.fetch.utils.Authorization;
 import com.maisyst.fetch.utils.enums.ResponseStatusCode;
 import emfitness.models.ActivityModel;
-import emfitness.models.CustomerModel;
 import emfitness.models.CustomerWithSubscribesModel;
 import emfitness.models.SubscribeInCustomerModel;
 import emfitness.models.SubscriptionModel;
@@ -177,7 +176,7 @@ public class PublicDashboardController {
                 fetch.get(Constants.CUSTOMER_CHECK_URL_PATH + "/" + roomId + "/" + identity).then((result, status) -> {
                     if (status == ResponseStatusCode.OK) {
                         CustomerWithSubscribesModel customer = gson.fromJson(result, CustomerWithSubscribesModel.class);
-                        new PopupValidateCustomerController(parent)
+                        new PopupValidateCustomerController(parent,maiState)
                                 .show(
                                         identity,
                                         customer.firstName(),
@@ -240,7 +239,6 @@ public class PublicDashboardController {
                         fetch.post(
                                 Constants.CUSTOMER_ADD_URL_PATH + subs.type() + "/" + activity.activityId() + "/" + roomId,
                                 body).then((result, status) -> {
-                                    System.out.println(result);
                                     if (status == ResponseStatusCode.OK) {
                                         Notifications.getInstance().show(Notifications.Type.SUCCESS, "Un membre à été ajouté.");
                                         CustomerWithSubscribesModel customerModel = gson.fromJson(result, CustomerWithSubscribesModel.class);

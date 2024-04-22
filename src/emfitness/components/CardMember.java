@@ -126,7 +126,7 @@ public class CardMember extends javax.swing.JDialog{
         roomName.setText("jLabel7");
 
         expirateDate.setFont(new java.awt.Font("SF Pro", 1, 17)); // NOI18N
-        expirateDate.setForeground(new java.awt.Color(0, 0, 0));
+        expirateDate.setForeground(new java.awt.Color(51, 126, 0));
         expirateDate.setText("jLabel7");
 
         jLabel9.setFont(new java.awt.Font("SF Pro", 1, 17)); // NOI18N

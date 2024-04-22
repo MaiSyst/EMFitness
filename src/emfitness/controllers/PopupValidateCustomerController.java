@@ -4,12 +4,14 @@
  */
 package emfitness.controllers;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.maisyst.fetch.MaiFetch;
 import com.maisyst.fetch.exceptions.MaiException;
 import com.maisyst.fetch.utils.enums.ResponseStatusCode;
 import emfitness.components.PopupValidateCustomer;
 import emfitness.models.SubscriptionModel;
 import emfitness.utilities.Constants;
+import emfitness.utilities.MaiState;
 import emfitness.utilities.MaiUtils;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +28,12 @@ import raven.toast.Notifications;
 public class PopupValidateCustomerController {
 
     private final PopupValidateCustomer modal;
-
-    public PopupValidateCustomerController(final JFrame parent) {
+    private final MaiState maiState;
+    public PopupValidateCustomerController(final JFrame parent,final MaiState maiState) {
         modal = new PopupValidateCustomer(parent, true);
+        modal.getBtnClose().setIcon(new FlatSVGIcon(Constants.ICONS_PATH+"/close.svg"));
         modal.getBtnClose().addActionListener(l->modal.dispose());
+        this.maiState=maiState;
     }
 
     public void show(final String identity, 
@@ -52,7 +56,6 @@ public class PopupValidateCustomerController {
         if (isValid) {
             modal.getCenter().remove(modal.getComboSubscription());
             modal.getCenter().remove(modal.getLblSubscription());
-            
             modal.getContainer().remove(modal.getFooter());
         } else {
             final DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) modal.getComboSubscription().getModel();
@@ -75,6 +78,7 @@ public class PopupValidateCustomerController {
                 if (status == ResponseStatusCode.OK) {
                     Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, "Réabonnement effectué.");
                     modal.dispose();
+                    this.maiState.updateState();
                 } else {
                     Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur de Réabonnement");
                 }

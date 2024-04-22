@@ -69,12 +69,13 @@ public final class MemberController implements MaiState {
     private final String roomId;
     private final Type listCustomer = new TypeToken<List<CustomerWithSubscribesModel>>() {
     }.getType();
-    private static final Logger logger=Logger.getLogger(MemberController.class.getName());
+    private static final Logger logger = Logger.getLogger(MemberController.class.getName());
+
     public MemberController(
             final JButton removeCustomer,
             final JButton addCustomer,
             final JTable table, final JTextField search,
-            final JFrame parent,final JButton reSubscribe, final String token, final MaiState maiState) {
+            final JFrame parent, final JButton reSubscribe, final String token, final MaiState maiState) {
         this.removeCustomer = removeCustomer;
         this.addCustomer = addCustomer;
         this.table = table;
@@ -86,15 +87,15 @@ public final class MemberController implements MaiState {
         this.fetch = API.fetch(new Authorization(token));
         init();
         addCustomer.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "plus.svg", 1f));
-        reSubscribe.addActionListener(l->onHandleResubscribe());
-        reSubscribe.setIcon(new FlatSVGIcon(Constants.ICONS_PATH+"resubscribe.svg"));
+        reSubscribe.addActionListener(l -> onHandleResubscribe());
+        reSubscribe.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "resubscribe.svg"));
     }
 
     public MemberController(
             final JButton removeCustomer,
             final JButton addCustomer,
             final JTable table, final JTextField search,
-            final JFrame parent,final JButton reSubscribe, final String token, 
+            final JFrame parent, final JButton reSubscribe, final String token,
             final MaiState maiState, final String roomId) {
         this.removeCustomer = removeCustomer;
         this.addCustomer = addCustomer;
@@ -105,17 +106,16 @@ public final class MemberController implements MaiState {
         this.isAdmin = false;
         this.roomId = roomId;
         this.fetch = API.fetch(new Authorization(token));
-            addCustomer.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "plus.svg", 1f));
-        reSubscribe.addActionListener(l->onHandleResubscribe());
-        reSubscribe.setIcon(new FlatSVGIcon(Constants.ICONS_PATH+"resubscribe.svg"));
+        addCustomer.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "plus.svg", 1f));
+        reSubscribe.addActionListener(l -> onHandleResubscribe());
+        reSubscribe.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "resubscribe.svg"));
         init();
 
     }
-  
-    
+
     private void init() {
         if (removeCustomer != null) {
-            
+
             removeCustomer.setIcon(new FlatSVGIcon(Constants.ICONS_PATH + "trash.svg", 1f));
             removeCustomer.addActionListener(l -> {
                 final var rows = table.getSelectedRows();
@@ -203,6 +203,7 @@ public final class MemberController implements MaiState {
                 url = Constants.CUSTOMER_FETCH_URL_PATH;
             }
             fetch.get(url).then((result, status) -> {
+
                 if (status == ResponseStatusCode.OK) {
                     dataList = gson.fromJson(result, listCustomer);
                     insertDataTable(dataList);
@@ -210,7 +211,7 @@ public final class MemberController implements MaiState {
             });
 
         } catch (MaiException e) {
-           logger.info(e.getMessage());
+            logger.info(e.getMessage());
         }
     }
 
@@ -219,58 +220,73 @@ public final class MemberController implements MaiState {
         model.setRowCount(0);
 
         data.forEach(item
-                -> model.addRow(new Object[]{
-            item.identityEMF(),
-            item.firstName(),
-            item.lastName().toUpperCase(),
-            item.yearOfBirth(),
-            item.address(),
-            item.customerId(),
-            item.roomName(),
-           item.subscribes().get(0).dateEnd()
-        })
+                -> {
+            if (item.subscribes().size() > 0) {
+                model.addRow(new Object[]{
+                    item.identityEMF(),
+                    item.firstName(),
+                    item.lastName().toUpperCase(),
+                    item.yearOfBirth(),
+                    item.address(),
+                    item.customerId(),
+                    item.roomName(),
+                    item.subscribes().get(0).dateEnd()
+                });
+            } else {
+                model.addRow(new Object[]{
+                    item.identityEMF(),
+                    item.firstName(),
+                    item.lastName().toUpperCase(),
+                    item.yearOfBirth(),
+                    item.address(),
+                    item.customerId(),
+                    item.roomName(),
+                    "Abonnement expiré"
+                });
+            }
+        }
         );
         TableColumnModel columnModel = table.getColumnModel();
         TableColumn buttonActionColumn = columnModel.getColumn(5);
         columnModel.getColumn(6).setMaxWidth(0);
         columnModel.getColumn(6).setMinWidth(0);
         columnModel.getColumn(6).setPreferredWidth(0);
-        
+
         columnModel.getColumn(7).setMaxWidth(0);
         columnModel.getColumn(7).setMinWidth(0);
         columnModel.getColumn(7).setPreferredWidth(0);
-        
+
         columnModel.getColumn(8).setMaxWidth(0);
         columnModel.getColumn(8).setMinWidth(0);
         columnModel.getColumn(8).setPreferredWidth(0);
-        
+
         buttonActionColumn.setCellRenderer(new ButtonActionShowRenderCell());
-        buttonActionColumn.setCellEditor(new ButtonActionShowRenderCellEditor(args -> 
-                showCardMember(
-                args[0].toString(),
-                args[1].toString(),
-                args[2].toString(),
-                args[3].toString(),
-                args[4].toString(),
-                args[5].toString().toUpperCase(),args[6].toString()
-        )));
+        buttonActionColumn.setCellEditor(new ButtonActionShowRenderCellEditor(args
+                -> showCardMember(
+                        args[0].toString(),
+                        args[1].toString(),
+                        args[2].toString(),
+                        args[3].toString(),
+                        args[4].toString(),
+                        args[5].toString().toUpperCase(), args[6].toString()
+                )));
     }
 
     private void onHandleShowModal() {
-        new MemberModalController(fetch, this::fetchMemberData, maiState,isAdmin).show();
+        new MemberModalController(fetch, this::fetchMemberData, maiState, isAdmin).show();
     }
 
     private void onHandleEditModal(String customerId, String firstName,
             String lastName, String birthday, String address) {
-        new MemberModalController(fetch, customerId, firstName, lastName, 
-                birthday, address, this::fetchMemberData, 
-                maiState,isAdmin).show();
+        new MemberModalController(fetch, customerId, firstName, lastName,
+                birthday, address, this::fetchMemberData,
+                maiState, isAdmin).show();
     }
 
     @Override
     public void updateState(Object... args) {
         fetchMemberData();
-        
+
         showCardMember(
                 args[0].toString(),
                 args[1].toString(),
@@ -279,21 +295,21 @@ public final class MemberController implements MaiState {
                 args[4].toString(),
                 args[5].toString(),
                 args[6].toString()
-                );
+        );
     }
-    
-    private void onHandleResubscribe(){
-        var row=table.getSelectedRow();
-        if(row==-1){
+
+    private void onHandleResubscribe() {
+        var row = table.getSelectedRow();
+        if (row == -1) {
             Notifications.getInstance().show(Notifications.Type.INFO, "Selectionner la ligne d'abord avant de faire le réabonnement.");
-        }else{
-            var firstName=table.getValueAt(row, 1).toString();
-            var lastName=table.getValueAt(row, 2).toString();
-            var identity=table.getValueAt(row, 0).toString();
+        } else {
+            var firstName = table.getValueAt(row, 1).toString();
+            var lastName = table.getValueAt(row, 2).toString();
+            var identity = table.getValueAt(row, 0).toString();
             new ResubscribeController(parent, fetch, identity, firstName, lastName).show();
         }
     }
-    
+
     static final class ButtonActionShowRenderCell extends DefaultTableCellRenderer {
 
         @Override
@@ -324,16 +340,16 @@ public final class MemberController implements MaiState {
             var address = table.getValueAt(row, 4).toString();
             var roomName = table.getValueAt(row, 6).toString();
             var expirate = table.getValueAt(row, 7).toString();
-           
+
             ButtonTableAction buttonAction = new ButtonTableAction(() -> callback.invoked(
-                    id, 
-                    firstName, 
-                    lastName, 
+                    id,
+                    firstName,
+                    lastName,
                     address,
                     birthday,
                     roomName,
                     expirate
-                    ));
+            ));
             if (isSelected) {
                 buttonAction.setBackground(table.getSelectionBackground());
             }
@@ -343,23 +359,23 @@ public final class MemberController implements MaiState {
     }
 
     private void showCardMember(
-            String id, 
-            String firstName, 
-            String lastName, 
-            String address, 
+            String id,
+            String firstName,
+            String lastName,
+            String address,
             String birthday,
             String roomName,
             String expirateDate
-            ) {
+    ) {
         try {
             BitMatrix matrix = new MultiFormatWriter().encode(id, BarcodeFormat.QR_CODE, 120, 120);
             BufferedImage imageBuff = MatrixToImageWriter.toBufferedImage(matrix);
 
-            new CardMemberController(parent, id, firstName, lastName, 
-                    birthday, 
-                    address,roomName,expirateDate, imageBuff).show();
+            new CardMemberController(parent, id, firstName, lastName,
+                    birthday,
+                    address, roomName, expirateDate, imageBuff).show();
         } catch (WriterException ex) {
-           logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
+            logger.log(Level.SEVERE, ex.getMessage(), ex.getCause());
         }
     }
 }

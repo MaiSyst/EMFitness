@@ -277,7 +277,6 @@ public final class PlanningController implements MaiState {
                     List<RoomWithSubscribeModel> models = gson.fromJson(result, roomListType);
                     filterRoom.removeAllItems();
                     filterRoom.addItem("Toutes les salles");
-
                     if (roomId.equals("admin")) {
                         models.forEach(model
                                 -> filterRoom.addItem(model.roomName()));
@@ -303,16 +302,33 @@ public final class PlanningController implements MaiState {
     private void insertDataTable(List<PlanningModel> models) {
         DefaultTableModel tableModel = (DefaultTableModel) tablePlanning.getModel();
         tableModel.setRowCount(0);
-        models.forEach(model
-                -> tableModel.addRow(new String[]{
-            model.planningId(),
-            MaiUtils.dateToFrench(model.day()),
-            model.startTime(),
-            model.endTime(),
-            model.activity().label(),
-            model.room().roomName()
-        })
-        );
+        if (roomId.equals("admin")) {
+            models.forEach(model
+                    -> tableModel.addRow(new String[]{
+                model.planningId(),
+                MaiUtils.dateToFrench(model.day()),
+                model.startTime(),
+                model.endTime(),
+                model.activity().label(),
+                model.room().roomName()
+            })
+            );
+        } else {
+            models.forEach(model
+                    -> {
+                if (model.room().roomId().equals(roomId)) {
+                    tableModel.addRow(new String[]{
+                        model.planningId(),
+                        MaiUtils.dateToFrench(model.day()),
+                        model.startTime(),
+                        model.endTime(),
+                        model.activity().label(),
+                        model.room().roomName()
+                    });
+                }
+            }
+            );
+        }
     }
 
     private void refreshDataTable(String roomId) {
@@ -344,7 +360,7 @@ public final class PlanningController implements MaiState {
     }
 
     private void showModal() {
-        new PlanningModalController(parent, fetch, () -> refreshDataTable(roomId), maiState,roomId
+        new PlanningModalController(parent, fetch, () -> refreshDataTable(roomId), maiState, roomId
         ).show();
     }
 
