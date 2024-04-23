@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 /**
  *
  * @author maisyst
@@ -35,8 +34,10 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
 
         container = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
-        iconValidate = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        iconError = new javax.swing.JLabel();
+        iconValidate = new javax.swing.JLabel();
         center = new javax.swing.JPanel();
         validity = new javax.swing.JLabel();
         identityCustomer = new javax.swing.JLabel();
@@ -70,20 +71,31 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
         header.setOpaque(false);
         header.setPreferredSize(new java.awt.Dimension(391, 150));
 
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        iconError.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        iconError.setIcon(new javax.swing.ImageIcon(getClass().getResource("/emfitness/icons/icons8.gif"))); // NOI18N
+        iconError.setMaximumSize(new java.awt.Dimension(100, 100));
+        iconError.setMinimumSize(new java.awt.Dimension(100, 100));
+        iconError.setPreferredSize(new java.awt.Dimension(100, 100));
+        jPanel1.add(iconError, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 390, 80));
+
         iconValidate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         iconValidate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/emfitness/icons/checkMark.gif"))); // NOI18N
+        jPanel1.add(iconValidate, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 390, -1));
 
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
-                .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(iconValidate, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
-                    .addGroup(headerLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+            .addGroup(headerLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 8, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,8 +103,8 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(btnClose, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(iconValidate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         container.add(header, java.awt.BorderLayout.PAGE_START);
@@ -203,7 +215,7 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
             centerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(centerLayout.createSequentialGroup()
                 .addComponent(validity, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addGroup(centerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(identityCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
@@ -219,7 +231,7 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
                 .addGroup(centerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(typeSubscription, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(centerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -252,7 +264,7 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
         footerLayout.setVerticalGroup(
             footerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, footerLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addComponent(btnRescubscribe, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -267,6 +279,10 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
 
     public JButton getBtnRescubscribe() {
         return btnRescubscribe;
+    }
+
+    public JLabel getIconError() {
+        return iconError;
     }
     
     public JButton getBtnClose() {
@@ -336,6 +352,7 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
     private javax.swing.JLabel firstName;
     private javax.swing.JPanel footer;
     private javax.swing.JPanel header;
+    private javax.swing.JLabel iconError;
     private javax.swing.JLabel iconValidate;
     private javax.swing.JLabel identityCustomer;
     private javax.swing.JLabel jLabel1;
@@ -344,6 +361,7 @@ public class PopupValidateCustomer extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lastName;
     private javax.swing.JLabel lblSubscription;
     private javax.swing.JLabel typeSubscription;
