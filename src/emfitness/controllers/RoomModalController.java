@@ -88,6 +88,7 @@ public class RoomModalController {
                             //RoomWithSubscribeModel model=gson.fromJson(result, RoomWithSubscribeModel.class);
                             Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, "Une salle a été mise a jour.");
                             func.invoked(roomId,roomName);
+                            roomModal.dispose();
                         }
                         case FORBIDDEN -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Access interdit.");
                         default -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur est survenue lors de l'ajout.");

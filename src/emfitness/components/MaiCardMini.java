@@ -109,7 +109,7 @@ public final class MaiCardMini extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-                buttonShowEvent.onEvent(cardId);
+                buttonShowEvent.onEvent(cardId,title());
             }
             
         });
@@ -157,7 +157,7 @@ public final class MaiCardMini extends JPanel {
                 super.mouseClicked(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
                 if (e.getClickCount() == 2) {
                     if(buttonEvent!=null){
-                        buttonEvent.onEvent(cardId, titleLabel.getText());
+                        buttonEvent.onEvent(cardId, title());
                     }
 
                 }
@@ -172,7 +172,7 @@ public final class MaiCardMini extends JPanel {
                         @Override
                         public void run() {
                            if(buttonPressedEvent!=null){
-                                buttonPressedEvent.onEvent(cardId,titleLabel.getText());
+                                buttonPressedEvent.onEvent(cardId,title());
                            }
 
                         }

@@ -82,14 +82,14 @@ public final class RoomController implements MaiState {
 
     }
 
-    private void deleteRoom(final String roomId) {
+    private void deleteRoom(final String roomId,final String roomName) {
         var option = JOptionPane.showConfirmDialog(parent, "Etes-vous de supprimer?", "Suppression", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
             try {
                 fetch.delete(Constants.ROOM_DELETE_URL_PATH + roomId).then((result, status) -> {
                     if (status == ResponseStatusCode.OK) {
                         Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, "Salle à été supprimé:");
-                        reFetchRoom();
+                        deleteInPanel(roomName);
                         states.forEach(state->state.updateState());
                     } else {
                         Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Error de suppression:");
@@ -124,7 +124,7 @@ public final class RoomController implements MaiState {
                                 model.roomName().toUpperCase(),
                                 desc, model.roomId(),
                                 args -> editRoom(args[0], args[1]),
-                                args -> deleteRoom(args[0]),
+                                args -> deleteRoom(args[0],args[1]),
                                 args -> showDetailRoom(
                                         model.roomName(),
                                         model.planning(),
@@ -155,7 +155,7 @@ public final class RoomController implements MaiState {
                 "0 Plannings",
                 roomId,
                 args -> editRoom(args[0], args[1]),
-                args -> deleteRoom(args[0]),
+                args -> deleteRoom(args[0],args[1]),
                 args -> showDetailRoom(args[1], new ArrayList<>(), new ArrayList<>(), null,0,0,0)
         );
         body.add(maiCardMini);
@@ -169,13 +169,12 @@ public final class RoomController implements MaiState {
             MaiCardMini v = (MaiCardMini) body.getComponent(i);
             if (v.getCardId().equals(roomId)) {
                 v.title(roomName);
-
-                body.repaint();
                 break;
             }
         }
+        body.repaint();
         states.forEach(state->state.updateState());
-
+        
     }
 
     private void searchIt(final String query) {
@@ -183,6 +182,15 @@ public final class RoomController implements MaiState {
             var card = (MaiCardMini) comp;
             comp.setVisible(card.title().trim().toLowerCase().contains(query.trim().toLowerCase()));
         }
+    }
+    private void deleteInPanel(final String title) {
+        for (var comp : body.getComponents()) {
+            var card = (MaiCardMini) comp;
+            if(card.title().trim().toLowerCase().contains(title.toLowerCase())){
+                body.remove(comp);
+            }
+        }
+        body.repaint();
     }
 
     private void resetSearch() {
