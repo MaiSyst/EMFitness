@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -118,7 +119,11 @@ public final class RoomController implements MaiState {
                     Type roomListType = new TypeToken<List<RoomModel>>() {
                     }.getType();
                     List<RoomModel> models = gson.fromJson(result, roomListType);
-                    for (var model : models) {
+                    var d=models.stream().sorted(
+                            (a,b)->a.roomName().toLowerCase().compareTo(b.roomName().toLowerCase()))
+                            .collect(Collectors.toUnmodifiableList());
+                    for (var model : d) {
+                       
                         var desc = model.customers().size() > 1 ? model.customers().size() + " abonnés" : model.customers().size() + " abonné";
                         MaiCardMini maiCardMini = new MaiCardMini(
                                 model.roomName().toUpperCase(),
@@ -172,8 +177,16 @@ public final class RoomController implements MaiState {
                 break;
             }
         }
-        body.repaint();
+        var d=Arrays.asList(body.getComponents())
+                .stream().sorted(
+                            (a,b)->((MaiCardMini) a).title().toLowerCase()
+                                    .compareTo(((MaiCardMini) b).title().toLowerCase()))
+                            .collect(Collectors.toUnmodifiableList());
+        body.removeAll();
+        d.forEach(body::add);
+        
         states.forEach(state->state.updateState());
+        body.repaint();
         
     }
 

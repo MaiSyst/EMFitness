@@ -13,6 +13,8 @@ import emfitness.models.RoomWithSubscribeModel;
 import emfitness.screens.RoomModal;
 import emfitness.utilities.Constants;
 import emfitness.utilities.MaiFunctionCallWithArgs;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
@@ -23,19 +25,31 @@ import raven.toast.Notifications;
  * @author orion90
  */
 public class RoomModalController {
-
+    
     private final RoomModal roomModal;
     private final MaiFunctionCallWithArgs func;
     private final MaiFetch fetch;
-
+    
     public RoomModalController(MaiFetch fetch, MaiFunctionCallWithArgs func) {
         this.roomModal = new RoomModal();
         this.fetch = fetch;
         this.func = func;
         this.roomModal.getBtnClose().addActionListener(l -> roomModal.dispose());
         roomModal.getBtnAdded().addActionListener(l -> addNewRoom());
+        roomModal.getInputRoomName().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+                if (e.getKeyCode() == 10) {
+                    addNewRoom();
+                }
+            }
+            
+        });
+        
     }
-    public RoomModalController(MaiFetch fetch,String roomName,String roomId, MaiFunctionCallWithArgs func) {
+
+    public RoomModalController(MaiFetch fetch, String roomName, String roomId, MaiFunctionCallWithArgs func) {
         this.roomModal = new RoomModal();
         roomModal.getInputRoomName().setText(roomName);
         roomModal.getBtnAdded().setText("Modifier");
@@ -43,6 +57,17 @@ public class RoomModalController {
         this.func = func;
         this.roomModal.getBtnClose().addActionListener(l -> roomModal.dispose());
         roomModal.getBtnAdded().addActionListener(l -> editRoom(roomId));
+        roomModal.getInputRoomName().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+                if (e.getKeyCode() == 10) {
+                    editRoom(roomId);
+                }
+            }
+            
+        });
+        
     }
     
     private void addNewRoom() {
@@ -54,16 +79,19 @@ public class RoomModalController {
                 final Map<String, Object> body = new HashMap<>();
                 body.put("roomName", roomName);
                 
-                fetch.post(Constants.ROOM_ADD_URL_PATH,body).then((result, status) -> {
+                fetch.post(Constants.ROOM_ADD_URL_PATH, body).then((result, status) -> {
                     switch (status) {
                         case OK -> {
-                            Gson gson=new Gson();
-                            RoomWithSubscribeModel model=gson.fromJson(result, RoomWithSubscribeModel.class);
+                            Gson gson = new Gson();
+                            RoomWithSubscribeModel model = gson.fromJson(result, RoomWithSubscribeModel.class);
                             Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, "Une salle a été ajouté.");
-                            func.invoked(model.roomId(),model.roomName());
+                            func.invoked(model.roomId(), model.roomName());
+                            roomModal.getInputRoomName().setText("");
                         }
-                        case FORBIDDEN -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Access interdit.");
-                        default -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur est survenue lors de l'ajout.");
+                        case FORBIDDEN ->
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Access interdit.");
+                        default ->
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur est survenue lors de l'ajout.");
                     }
                 });
             } catch (MaiException e) {
@@ -80,18 +108,19 @@ public class RoomModalController {
             try {
                 final Map<String, Object> body = new HashMap<>();
                 body.put("roomName", roomName);
-                fetch.put(Constants.ROOM_UPDATE_URL_PATH+roomId,body).then((result, status) -> {
+                fetch.put(Constants.ROOM_UPDATE_URL_PATH + roomId, body).then((result, status) -> {
                     switch (status) {
                         case OK -> {
-                            System.out.println(result);
                             //Gson gson=new Gson();
                             //RoomWithSubscribeModel model=gson.fromJson(result, RoomWithSubscribeModel.class);
                             Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, "Une salle a été mise a jour.");
-                            func.invoked(roomId,roomName);
+                            func.invoked(roomId, roomName);
                             roomModal.dispose();
                         }
-                        case FORBIDDEN -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Access interdit.");
-                        default -> Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur est survenue lors de l'ajout.");
+                        case FORBIDDEN ->
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Access interdit.");
+                        default ->
+                            Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, "Erreur est survenue lors de l'ajout.");
                     }
                 });
             } catch (MaiException e) {
@@ -99,6 +128,7 @@ public class RoomModalController {
             }
         }
     }
+
     public void show(JFrame parent) {
         roomModal.getAccessibleContext().setAccessibleParent(parent);
         roomModal.setVisible(true);
