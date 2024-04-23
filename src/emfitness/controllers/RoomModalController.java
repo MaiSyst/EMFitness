@@ -77,7 +77,7 @@ public class RoomModalController {
         } else {
             try {
                 final Map<String, Object> body = new HashMap<>();
-                body.put("roomName", roomName);
+                body.put("roomName", roomName.toLowerCase());
                 
                 fetch.post(Constants.ROOM_ADD_URL_PATH, body).then((result, status) -> {
                     switch (status) {
@@ -107,7 +107,7 @@ public class RoomModalController {
         } else {
             try {
                 final Map<String, Object> body = new HashMap<>();
-                body.put("roomName", roomName);
+                body.put("roomName", roomName.toLowerCase());
                 fetch.put(Constants.ROOM_UPDATE_URL_PATH + roomId, body).then((result, status) -> {
                     switch (status) {
                         case OK -> {
